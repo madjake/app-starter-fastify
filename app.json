@@ -1,0 +1,6 @@
+{
+  "name": "Fastify App Template",
+  "description": "Fastify App Template",
+  "keywords": ["node", "fastify", "heroku"],
+  "image": "heroku/nodejs"
+}
