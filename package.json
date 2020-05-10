@@ -5,17 +5,16 @@
   "scripts": {
     "start": "node src/index.js",
     "start-dev": "nodemon -L -e ejs,js src/index.js",
-    "prettier": "prettier --single-quote --trailing-comma all --write package.json package-lock.json \"src/*/**.js\"",
     "fix": "npm run prettier",
-    "test": "jest --no-cache"
+    "test": "jest"
   },
   "engines": {
     "node": "12.x"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run fix && npm test",
-      "pre-push": "npm run fix && npm test"
+      "pre-commit": "lint-staged && npm test",
+      "pre-push": "npm test"
     }
   },
   "jest": {
@@ -38,8 +37,12 @@
   "devDependencies": {
     "husky": "^4.2.5",
     "jest": "^26.0.1",
+    "lint-staged": "^10.2.2",
     "nodemon": "^2.0.3",
     "prettier": "^2.0.5",
     "supertest": "^4.0.2"
+  },
+  "lint-staged": {
+    "*.{js,css,md,ejs}": "prettier --write"
   }
 }
