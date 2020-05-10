@@ -29,7 +29,7 @@ class ApplicationServer {
     this.applicationConfig = applicationConfig;
 
     this.fastify = fastify({
-      logger: true,
+      logger: applicationConfig.logging.enabled,
     });
 
     this.injectBaseDependencies();

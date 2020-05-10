@@ -5,7 +5,7 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - .:/opt/webapp
+      - .:/opt/app
     links:
       - database
   database:
