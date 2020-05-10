@@ -1,6 +1,9 @@
 {
   "port": 5000,
   "host": "0.0.0.0",
+  "logging": {
+    "enabled": true
+  },
   "cookies": {
     "path": "/",
     "domain": "localhost",
