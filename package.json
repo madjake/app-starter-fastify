@@ -5,7 +5,6 @@
   "scripts": {
     "start": "node src/index.js",
     "start-dev": "nodemon -L -e ejs,js src/index.js",
-    "fix": "npm run prettier",
     "test": "jest"
   },
   "engines": {
