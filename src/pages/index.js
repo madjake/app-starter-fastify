@@ -1,4 +1,4 @@
-const page = async (request, reply) => {
+const page = (request, reply) => {
   reply.view('src/templates/index.ejs', {
     page: {
       title: 'App',
