@@ -4,7 +4,7 @@
 // The decorators need a decorators directory or some such
 
 const authenticationPlugin = (fastify) => {
-  fastify.register(require('fastify-jwt'), {
+  fastify.register(require("fastify-jwt"), {
     secret: fastify.config.jwt.secret,
     cookie: {
       cookieName: fastify.config.cookies.jwtTokenName,
@@ -12,25 +12,25 @@ const authenticationPlugin = (fastify) => {
   });
 
   // Routes can set this as a preValidation check to make sure somebody has Auth'd with the app
-  fastify.decorate('authenticate', async function (request, reply, done) {
+  fastify.decorate("authenticate", async function (request, reply, done) {
     try {
       await request.jwtVerify();
     } catch (err) {
       console.log(err);
-      reply.status(401).send('You must be logged in.');
+      reply.status(401).send("You must be logged in.");
     }
   });
 
   // Convenience methods for adding routes that require this auth behavior
-  fastify.decorate('addAuthRoute', function (opts) {
+  fastify.decorate("addAuthRoute", function (opts) {
     let preValidation = opts.preValidation || [];
     opts.preValidation = [...preValidation, this.authenticate];
     this.route(opts);
   });
 
-  fastify.decorate('addGETAuthRoute', function (path, handler, opts) {
+  fastify.decorate("addGETAuthRoute", function (path, handler, opts) {
     opts = opts || {};
-    opts.method = 'GET';
+    opts.method = "GET";
     opts.path = path;
     opts.handler = handler;
 

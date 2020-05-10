@@ -1,9 +1,9 @@
-const config = require('./lib/config');
-const routes = require('./routes');
-const ApplicationServer = require('./ApplicationServer');
+const config = require("./lib/config");
+const routes = require("./routes");
+const ApplicationServer = require("./ApplicationServer");
 
 const appConfig = config.getConfigFromEnvironment(
-  process.env.NODE_ENV || 'local'
+  process.env.NODE_ENV || "local"
 );
 
 // Environment variable PORT clobbers config to support Heroku
