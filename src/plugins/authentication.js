@@ -3,8 +3,10 @@
 // Registering the fastify-jwt plugin goes with middleware code
 // The decorators need a decorators directory or some such
 
-const authenticationPlugin = (fastify) => {
-  fastify.register(require("fastify-jwt"), {
+import fastifyJWT from "fastify-jwt";
+
+const authentication = (fastify) => {
+  fastify.register(fastifyJWT, {
     secret: fastify.config.jwt.secret,
     cookie: {
       cookieName: fastify.config.cookies.jwtTokenName,
@@ -17,7 +19,10 @@ const authenticationPlugin = (fastify) => {
       await request.jwtVerify();
     } catch (err) {
       console.log(err);
-      reply.status(401).send("You must be logged in.");
+      reply
+        .status(401)
+        .type("text/html; charset=utf-8")
+        .send("Not authenticated.");
     }
   });
 
@@ -38,4 +43,4 @@ const authenticationPlugin = (fastify) => {
   });
 };
 
-module.exports = authenticationPlugin;
+export default authentication;

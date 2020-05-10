@@ -1,9 +1,15 @@
-const path = require("path");
-const crypto = require("crypto");
+import * as path from "path";
+import * as crypto from "crypto";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+import { readFileSync } from "fs";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // These methods can be defined int he config json file to indicate which
 // method is being used to store the JWT Secret. The key path is `jwt.secretStorageMethod`
-const SecretStorageMethods = {
+export const SecretStorageMethods = {
   Vault: "Vault",
   AwsSecretsManager: "AwsSecretsManager",
   EnvironmentVariable: "EnvironmentVariable",
@@ -13,13 +19,13 @@ const SecretStorageMethods = {
 
 // load application config from flat file
 // and resolve and other config related values
-const getConfigFromEnvironment = (appEnvironment) => {
+export const getConfigFromEnvironment = (appEnvironment) => {
   const configPath = path.join(
     __dirname,
     `../../configs/${appEnvironment}.json`
   );
 
-  const appConfig = require(configPath);
+  const appConfig = JSON.parse(readFileSync(configPath, "utf8"));
 
   switch (appConfig.jwt.secretStorageMethod) {
     case SecretStorageMethods.Vault:
@@ -44,8 +50,4 @@ const getConfigFromEnvironment = (appEnvironment) => {
   }
 
   return appConfig;
-};
-
-module.exports = {
-  getConfigFromEnvironment: getConfigFromEnvironment,
 };

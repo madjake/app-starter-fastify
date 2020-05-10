@@ -1,22 +1,24 @@
-const request = require("request");
-const net = require("net");
-const supertest = require("supertest");
+//const supertest = require("supertest");
+//const WebSocket = require('ws');
+import supertest from "supertest";
+import WebSocket from "ws";
+
+import { getConfigFromEnvironment } from "./lib/config.js";
+import { httpRoutes, webSocketHandler } from "./routes.js";
+import ApplicationServer from "./ApplicationServer.js";
+
 let applicationServer;
 
 beforeAll(async () => {
-  const config = require("./lib/config");
-  const routes = require("./routes");
-  const ApplicationServer = require("./ApplicationServer");
-
-  const appConfig = config.getConfigFromEnvironment("local");
+  const appConfig = getConfigFromEnvironment("local");
 
   const randomPort = 5000 + Math.floor(Math.random() * 10000);
   appConfig.port = randomPort;
 
   applicationServer = new ApplicationServer(appConfig);
 
-  applicationServer.registerRoutes(routes.HTTPRoutes);
-  applicationServer.registerRoutes(routes.webSocketRoutes);
+  applicationServer.registerRoutes(httpRoutes);
+  applicationServer.registerRoutes(webSocketHandler);
 
   await applicationServer.start();
 });
@@ -37,9 +39,33 @@ test("if loaded config has basic values set", async () => {
   ).toBeGreaterThan(0);
 });
 
-test("if homepage returns anything", async () => {
+test("if homepage returns HTTP status code 200", async () => {
   const response = await supertest(applicationServer.fastify.server)
     .get("/")
     .expect(200)
     .expect("Content-Type", "text/html; charset=utf-8");
+});
+
+test("if /profile returns HTTP status code 401 not authorized when requested without JWT cookie", async () => {
+  const response = await supertest(applicationServer.fastify.server)
+    .get("/profile")
+    .expect(401)
+    .expect("Content-Type", "text/html; charset=utf-8");
+});
+
+test("if websocket without jwt cookie is rejected when accessing /wsdata websocket endpoint", async (done) => {
+  const ws = new WebSocket(
+    `ws://${applicationServer.getAddress()}:${applicationServer.getPort()}/wsdata`
+  )
+    .on("open", () => {
+      ws.send("Test message");
+    })
+    .on("message", (data) => {
+      expect(data).toEqual(
+        expect.stringMatching("Not authenticated. Closing connection.")
+      );
+    })
+    .on("close", () => {
+      done();
+    });
 });

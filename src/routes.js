@@ -1,12 +1,22 @@
 // PAGES
-const indexPage = require("./pages/index");
+import indexPage from "./pages/index.js";
+import { inspect } from "util";
+
+export { webSocketHandler } from "./handlers/webSocketHandler.js";
 
 // Standard HTTP Routes
-const HTTPRoutes = (fastify) => {
+export const httpRoutes = (fastify) => {
   fastify.get("/", indexPage); //home page
 
   fastify.addGETAuthRoute("/profile", async (request, reply) => {
-    return { output: request.user };
+    if (!request.user) {
+      return reply
+        .code(401)
+        .type("text/html; charset=utf-8")
+        .send("This should not happen.");
+    }
+
+    return reply.send(`Your session: ${inspect(request.user)}`);
   });
 
   fastify.get("/logout", async (request, reply) => {});
@@ -26,11 +36,6 @@ const HTTPRoutes = (fastify) => {
         httpOnly: request.config.cookies.httpOnly,
         sameSite: request.config.cookies.sameSite,
       })
-      .send("You are logged in now.");
+      .send("You are now logged in with a guest session.");
   });
-};
-
-module.exports = {
-  HTTPRoutes: HTTPRoutes,
-  webSocketRoutes: require("./handlers/webSocketHandler"),
 };

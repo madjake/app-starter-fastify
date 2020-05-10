@@ -1,6 +1,18 @@
-const path = require("path");
-const helmet = require("fastify-helmet");
-const authenticationPlugin = require("./plugins/authentication");
+import * as path from "path";
+
+import fastify from "fastify";
+import helmet from "fastify-helmet";
+import fastifyCookie from "fastify-cookie";
+import fastifyStatic from "fastify-static";
+import pointOfView from "point-of-view";
+import ejsTemplates from "ejs";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+import authenticationPlugin from "./plugins/authentication.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const notFoundMessages = [
   "Not found.",
@@ -16,7 +28,7 @@ class ApplicationServer {
   constructor(applicationConfig) {
     this.applicationConfig = applicationConfig;
 
-    this.fastify = require("fastify")({
+    this.fastify = fastify({
       logger: true,
     });
 
@@ -38,15 +50,15 @@ class ApplicationServer {
   }
 
   loadMiddleware() {
-    this.fastify.register(require("point-of-view"), {
+    this.fastify.register(pointOfView, {
       engine: {
-        ejs: require("ejs"),
+        ejs: ejsTemplates,
       },
       options: {},
     });
 
     this.fastify.register(helmet);
-    this.fastify.register(require("fastify-cookie"));
+    this.fastify.register(fastifyCookie);
 
     authenticationPlugin(this.fastify);
   }
@@ -54,7 +66,7 @@ class ApplicationServer {
   // Static file serving
   registerBaseRoutes() {
     // Serve static files under the public directory
-    this.fastify.register(require("fastify-static"), {
+    this.fastify.register(fastifyStatic, {
       root: path.join(__dirname, "../public"),
       prefix: "/static",
     });
@@ -112,4 +124,4 @@ class ApplicationServer {
   }
 }
 
-module.exports = ApplicationServer;
+export default ApplicationServer;

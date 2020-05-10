@@ -1,8 +1,9 @@
-const cookie = require("cookie");
+import * as cookie from "cookie";
+import fastifyWebSocket from "fastify-websocket";
 
-const webSocketHandler = (fastify) => {
+const handler = (fastify) => {
   //wsdata endpoint
-  fastify.register(require("fastify-websocket"));
+  fastify.register(fastifyWebSocket);
 
   fastify.get(
     "/wsdata",
@@ -30,4 +31,4 @@ const webSocketHandler = (fastify) => {
   );
 };
 
-module.exports = webSocketHandler;
+export const webSocketHandler = handler;

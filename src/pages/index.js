@@ -1,4 +1,4 @@
-const page = (request, reply) => {
+const indexPage = (request, reply) => {
   reply.view("src/templates/index.ejs", {
     page: {
       title: "App",
@@ -7,4 +7,4 @@ const page = (request, reply) => {
   });
 };
 
-module.exports = page;
+export default indexPage;
