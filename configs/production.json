@@ -1,4 +1,18 @@
 {
   "port": 5000,
-  "host": "0.0.0.0"
+  "host": "0.0.0.0",
+  "cookies": {
+    "path": "/",
+    "domain": "localhost",
+    "jwtTokenName": "appToken",
+    "secure": false,
+    "httpOnly": false,
+    "sameSite": "strict"
+  },
+  "jwt": {
+    "expiresIn": 30000,
+    "secretStorageMethod": "Random",
+    "EnvironmentVariableName": "APP_JWT_SECRET",
+    "secret": "I am terrible secret that is just hardcoded here and should not be used for anything other than testing."
+  }
 }
