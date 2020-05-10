@@ -12,6 +12,13 @@ View a live demo of this on Heroku: [https://fastify-starter.herokuapp.com/](htt
 npm run start-dev
 ```
 
+
+## Run the tests
+
+```bash
+npm test
+```
+
 ## Deploying to Heroku
 
 Requires Heroku CLI

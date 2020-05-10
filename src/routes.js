@@ -1,29 +1,37 @@
-
-
 // PAGES
-
 const indexPage = require('./pages/index');
 
-const registerRoutes = (fastify) => {
+// Standard HTTP Routes
+const HTTPRoutes = (fastify) => {
   fastify.get('/', indexPage); //home page
+  
+  fastify.addGETAuthRoute('/profile', async (request, reply) => {
+    return { output: request.user };
+  });
+  
+  fastify.get('/logout', async (request, reply) => {
+
+  });
+
+  fastify.get('/login', async (request, reply) => {
+    const token = await reply.jwtSign({
+      name: 'guest',
+      roles: ['guest'],
+      expiresIn: request.config.jwt.expiresIn
+    });
+
+    await reply.setCookie(request.config.cookies.jwtTokenName, token, {
+      domain: request.config.cookies.domain,
+      path: request.config.cookies.path,
+      secure: request.config.cookies.secure,
+      httpOnly: request.config.cookies.httpOnly,
+      sameSite: request.config.cookies.sameSite 
+    }).send('You are logged in now.');
+
+  });
 };
 
-const websocketHandlers = (fastify) => {
-  fastify.register(require('fastify-websocket'), {
-    handle,
-    options: {
-      maxPayload: 1048576, // we set the maximum allowed messages size to 1 MiB (1024 bytes * 1024 bytes)
-      path: '/ws', // we accept only connections matching this path e.g.: ws://localhost:3000/fastify
-      verifyClient: function (info, next) {
-        if (info.req.headers['x-fastify-header'] !== appConfig.filterHeaderValue) {
-          return next(false) // the connection is not allowed
-        }
-        next(true) // the connection is allowed
-      }
-    }
-  })
-};
 module.exports = {
-  registerRoutes: registerRoutes,
-  registerWebsocketHandlers: websocketHandlers,
+  HTTPRoutes: HTTPRoutes,
+  webSocketRoutes: require('./handlers/webSocketHandler')
 };
