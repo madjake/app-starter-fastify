@@ -26,6 +26,7 @@ export const getConfigFromEnvironment = (appEnvironment) => {
   );
 
   const appConfig = JSON.parse(readFileSync(configPath, "utf8"));
+  appConfig.env = appEnvironment;
 
   switch (appConfig.jwt.secretStorageMethod) {
     case SecretStorageMethods.Vault:

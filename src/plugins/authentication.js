@@ -14,11 +14,14 @@ const authentication = (fastify) => {
   });
 
   // Routes can set this as a preValidation check to make sure somebody has Auth'd with the app
-  fastify.decorate("authenticate", async function (request, reply, done) {
+  fastify.decorate("authenticate", async function (request, reply) {
     try {
       await request.jwtVerify();
     } catch (err) {
-      console.log(err);
+      if (err.name && err.name !== "UnauthorizedError") {
+        console.log(err);
+      }
+
       reply
         .status(401)
         .type("text/html; charset=utf-8")

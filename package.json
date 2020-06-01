@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js",
-    "start-dev": "nodemon -L -e ejs,js src/index.js",
+    "start": "npm run build && node --experimental-modules src/index.js",
+    "build": "echo \"Nothing to build.\"",
+    "start-dev": "nodemon --experimental-modules -L --watch src -e ejs,js src/index.js --exec \"npm run build\"",
     "test": "npm run jest",
-    "jest": "node --experimental-vm-modules --experimental-import-meta-resolve node_modules/jest/bin/jest.js"
+    "jest": "node --experimental-vm-modules --experimental-import-meta-resolve --experimental-modules node_modules/jest/bin/jest.js"
   },
   "engines": {
     "node": "14.x"
@@ -22,6 +23,9 @@
     "verbose": true,
     "testEnvironment": "jest-environment-node",
     "transform": {}
+  },
+  "lint-staged": {
+    "*.{js,css,md,ejs,yml,yaml}": "prettier --write ."
   },
   "author": "Jake Fournier",
   "license": "UNLICENSED",
@@ -44,8 +48,5 @@
     "prettier": "^2.0.5",
     "supertest": "^4.0.2",
     "ws": "^7.3.0"
-  },
-  "lint-staged": {
-    "*.{js,css,md,ejs,yml,yaml}": "prettier --write ."
   }
 }

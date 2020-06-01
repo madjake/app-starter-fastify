@@ -5,19 +5,20 @@
     <meta name="description" content="Search <%= page.description %>">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="/static/js/main.js"></script>
   </head>
   <body style="text-align: center;">
-      <div>
-        <a href="https://github.com/madjake/app-starter-fastify">This code</a>
-      </div>
-      <hr>
-      <div>
-        <img src="/static/images/blake_ancient_of_days.jpg">
-      </div>
-      <footer>
-        &copy; <%= (new Date).getFullYear() %> 
-      </footer>
+    <div>
+      <a href="https://github.com/madjake/app-starter-fastify">This code</a>
     </div>
+    <hr>
+    <div id="appContainer"></div>
+    <footer>
+      &copy; <%= (new Date).getFullYear() %> 
+    </footer>
+    <% if (globals.mode !== globals.constants.modes.PRODUCTION)  { %>
+    <script src="/static/js/main.js"></script>
+    <% } else { %>
+    <script src="/static/js/main.js"></script>
+    <% } %>
   </body>
 </html>

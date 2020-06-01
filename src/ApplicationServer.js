@@ -24,12 +24,23 @@ const notFoundMessages = [
 
 const errorMessages = ["🔥", "☣"];
 
+const globalConstants = {
+  modes: {
+    PRODUCTION: "production",
+    DEVELOPMENT: "development",
+  },
+};
+
 class ApplicationServer {
   constructor(applicationConfig) {
     this.applicationConfig = applicationConfig;
 
+    const loggerOptions = {
+      level: applicationConfig.logging.level,
+    };
+
     this.fastify = fastify({
-      logger: true,
+      logger: applicationConfig.logging.enabled ? loggerOptions : false,
     });
 
     this.injectBaseDependencies();
@@ -55,6 +66,15 @@ class ApplicationServer {
         ejs: ejsTemplates,
       },
       options: {},
+      defaultContext: {
+        globals: {
+          mode:
+            this.applicationConfig.env === "production"
+              ? "production"
+              : "development",
+          constants: globalConstants,
+        },
+      },
     });
 
     this.fastify.register(helmet);
